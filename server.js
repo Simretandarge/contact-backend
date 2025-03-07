@@ -3,9 +3,16 @@ const express = require('express');
 const nodemailer = require('nodemailer');
 const cors = require('cors');
 
+
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+app._router.stack.forEach(function (r) {
+    if (r.route && r.route.path) {
+        console.log(r.route.path);
+    }
+});
 
 // Email sending route
 app.post('/send-email', async (req, res) => {
