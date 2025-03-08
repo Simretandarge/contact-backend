@@ -13,6 +13,7 @@ CORS(app)  # Enable CORS for all routes
 # Ensure environment variables exist
 EMAIL_USER = os.getenv('EMAIL_USER')
 EMAIL_PASS = os.getenv('EMAIL_PASS')
+RECEIVER_EMAIL = os.getenv('RECEIVER_EMAIL', "andargesimret@gmail.com")
 
 if not EMAIL_USER or not EMAIL_PASS:
     raise ValueError("EMAIL_USER or EMAIL_PASS is missing from environment variables!")
@@ -42,8 +43,9 @@ def send_email():
 
         msg = Message(
             subject=f"New Contact Form Submission from {data['name']}",
-            sender=app.config['MAIL_DEFAULT_SENDER'],
-            recipients=["andargesimret@gmail.com"],  # Change if needed
+            sender=app.config['MAIL_DEFAULT_SENDER'],  # Always use SMTP email as sender
+            reply_to=data['email'],  # Allows recipient to reply directly to the sender
+            recipients=[RECEIVER_EMAIL],
             body=f"Name: {data['name']}\nEmail: {data['email']}\nMessage: {data['message']}"
         )
         mail.send(msg)
